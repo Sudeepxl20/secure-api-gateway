@@ -1,0 +1,35 @@
+# Java
+*.class
+*.jar
+*.war
+*.ear
+target/
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+*.egg-info/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# Logs
+logs/*.log
+
+# Environment
+.env
+*.pem
+*.key
+
+# OS
+.DS_Store
+Thumbs.db

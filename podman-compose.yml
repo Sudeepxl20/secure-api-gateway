@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  security-scanner:
+    build:
+      context: ./security-scanner
+      dockerfile: Dockerfile
+    container_name: security-scanner
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./logs:/app/logs:z
+    environment:
+      - PYTHONUNBUFFERED=1
+    networks:
+      - app-network
+    restart: "no"
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - security-scanner
+    volumes:
+      - ./logs:/app/logs:z
+    environment:
+      - JWT_SECRET=your-256-bit-secret-key-for-jwt-auth
+      - SCANNER_URL=http://security-scanner:8000
+    networks:
+      - app-network
+    restart: "no"
+
+networks:
+  app-network:
+    driver: bridge

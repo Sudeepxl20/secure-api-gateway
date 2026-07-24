@@ -1,0 +1,26 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+jwt:
+  secret: ${JWT_SECRET:your-256-bit-secret-key-please-change-in-production}
+  expiration: 3600000
+
+logging:
+  file:
+    name: /app/logs/gateway.log
+  level:
+    com.example.gateway: DEBUG
+
+scanner:
+  service:
+    url: ${SCANNER_URL:http://security-scanner:8000}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
