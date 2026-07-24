@@ -5,8 +5,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * Main entry point for the API Gateway application.
+ * This service handles authentication, routing, and security scanning orchestration.
+ */
 @SpringBootApplication
 public class GatewayApplication {
+    
     public static void main(String[] args) {
         SpringApplication.run(GatewayApplication.class, args);
         System.out.println("🚀 API Gateway running on port 8080");
