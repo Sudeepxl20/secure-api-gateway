@@ -5,6 +5,11 @@ from typing import Dict, List
 from .models import ScanRequest, ScanResult
 
 class SecurityScanner:
+    """
+    Security scanner that analyzes HTTP requests for potential vulnerabilities.
+    Detects SQL injection, XSS, path traversal, and other security issues.
+    """
+    
     def __init__(self):
         self.scan_history = {}
         self.vulnerability_patterns = {
@@ -28,30 +33,33 @@ class SecurityScanner:
         self.sensitive_keywords = ['password', 'secret', 'key', 'token', 'auth']
 
     def scan_request(self, scan_request: ScanRequest) -> ScanResult:
+        """Scan an HTTP request for security vulnerabilities."""
         request_id = str(uuid.uuid4())[:8]
         timestamp = int(time.time() * 1000)
         
         vulnerabilities = []
         total_weight = 0
         
-        # Check endpoint
+        # Check endpoint for suspicious patterns
         endpoint_vulns = self._analyze_string(scan_request.endpoint, 'endpoint')
         vulnerabilities.extend(endpoint_vulns)
         total_weight += sum(v['weight'] for v in endpoint_vulns)
         
-        # Check headers
+        # Check headers for sensitive information
         header_vulns = self._analyze_headers(scan_request.headers)
         vulnerabilities.extend(header_vulns)
         total_weight += sum(v['weight'] for v in header_vulns)
         
-        # Check body
+        # Check body for vulnerabilities
         if scan_request.body:
             body_vulns = self._analyze_string(scan_request.body, 'body')
             vulnerabilities.extend(body_vulns)
             total_weight += sum(v['weight'] for v in body_vulns)
         
+        # Calculate security score (100 - total_weight, min 0)
         security_score = max(0, 100 - total_weight)
         
+        # Determine risk level
         if security_score >= 80:
             risk_level = "LOW"
         elif security_score >= 60:
@@ -74,6 +82,7 @@ class SecurityScanner:
         return result
 
     def _analyze_string(self, text: str, source: str) -> List[Dict]:
+        """Analyze a string for vulnerability patterns."""
         vulnerabilities = []
         for vuln_type, config in self.vulnerability_patterns.items():
             for pattern in config['patterns']:
@@ -94,6 +103,7 @@ class SecurityScanner:
         return vulnerabilities
 
     def _analyze_headers(self, headers: Dict[str, str]) -> List[Dict]:
+        """Analyze HTTP headers for security issues."""
         vulnerabilities = []
         security_headers = ['x-frame-options', 'x-content-type-options', 'x-xss-protection']
         missing = [h for h in security_headers if h not in headers]
